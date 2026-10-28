@@ -6,6 +6,13 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type        = var.account_replication_type
   min_tls_version                 = "TLS1_2"
   allow_nested_items_to_be_public = false
+  public_network_access_enabled   = var.public_network_access_enabled
+
+  network_rules {
+    default_action = "Deny"
+    bypass         = ["AzureServices"]
+    ip_rules       = var.allowed_ip_addresses
+  }
 
   tags = var.tags
 }
@@ -29,4 +36,20 @@ resource "azurerm_private_endpoint" "pep_blob" {
   }
 
   tags = var.tags
+}
+
+# Diagnostic setting to send all Blob logs (Read/Write/Delete) to Log Analytics Workspace
+resource "azurerm_monitor_diagnostic_setting" "sa_blob_diag" {
+  count                      = var.log_analytics_workspace_id != null ? 1 : 0
+  name                       = "diag-${var.name}-blob"
+  target_resource_id         = "${azurerm_storage_account.sa.id}/blobServices/default"
+  log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  enabled_log {
+    category_group = "allLogs"
+  }
+
+  enabled_metric {
+    category = "AllMetrics"
+  }
 }

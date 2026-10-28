@@ -72,6 +72,12 @@ variable "acr_sku" {
   default     = "Standard"
 }
 
+variable "acr_admin_enabled" {
+  description = "Enable admin user on ACR. False by default to enforce Managed Identity auth."
+  type        = bool
+  default     = false
+}
+
 variable "servicebus_sku" {
   description = "Service Bus SKU: Basic, Standard, or Premium. Note: Private endpoints require Premium."
   type        = string
@@ -106,4 +112,19 @@ variable "admin_principal_id" {
   description = "Optional object ID of the user or SP to grant Key Vault Administrator role (defaults to deployer if unset)"
   type        = string
   default     = null
+}
+
+# -----------------------------------------------------------------------------
+# Network Security & Access Control
+# -----------------------------------------------------------------------------
+variable "public_network_access_enabled" {
+  description = "Whether public network access is allowed on Key Vault and Storage. Set to false for strict private connectivity."
+  type        = bool
+  default     = false
+}
+
+variable "allowed_ip_addresses" {
+  description = "Optional list of public IPv4 addresses allowed through firewall if public access is needed during deploy"
+  type        = list(string)
+  default     = []
 }

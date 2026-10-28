@@ -59,15 +59,18 @@ module "monitoring" {
 module "keyvault" {
   source = "./modules/keyvault"
 
-  name                = "kv-${local.suffix}"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = local.location
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  sku_name            = var.keyvault_sku
-  subnet_id           = module.vnet.subnet_ids["pep"]
-  private_dns_zone_id = module.private_dns.dns_zone_ids["keyvault"]
-  admin_principal_id  = coalesce(var.admin_principal_id, data.azurerm_client_config.current.object_id)
-  tags                = local.tags
+  name                          = "kv-${local.suffix}"
+  resource_group_name           = data.azurerm_resource_group.rg.name
+  location                      = local.location
+  tenant_id                     = data.azurerm_client_config.current.tenant_id
+  sku_name                      = var.keyvault_sku
+  subnet_id                     = module.vnet.subnet_ids["pep"]
+  private_dns_zone_id           = module.private_dns.dns_zone_ids["keyvault"]
+  admin_principal_id            = coalesce(var.admin_principal_id, data.azurerm_client_config.current.object_id)
+  public_network_access_enabled = var.public_network_access_enabled
+  allowed_ip_addresses          = var.allowed_ip_addresses
+  log_analytics_workspace_id    = module.monitoring.workspace_id
+  tags                          = local.tags
 }
 
 # =============================================================================
@@ -76,12 +79,15 @@ module "keyvault" {
 module "storage" {
   source = "./modules/storage"
 
-  name                = "st${substr(local.clean_suffix, 0, 22)}"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = local.location
-  subnet_id           = module.vnet.subnet_ids["pep"]
-  private_dns_zone_id = module.private_dns.dns_zone_ids["blob"]
-  tags                = local.tags
+  name                          = "st${substr(local.clean_suffix, 0, 22)}"
+  resource_group_name           = data.azurerm_resource_group.rg.name
+  location                      = local.location
+  subnet_id                     = module.vnet.subnet_ids["pep"]
+  private_dns_zone_id           = module.private_dns.dns_zone_ids["blob"]
+  public_network_access_enabled = var.public_network_access_enabled
+  allowed_ip_addresses          = var.allowed_ip_addresses
+  log_analytics_workspace_id    = module.monitoring.workspace_id
+  tags                          = local.tags
 }
 
 # =============================================================================
@@ -90,13 +96,15 @@ module "storage" {
 module "acr" {
   source = "./modules/acr"
 
-  name                = "acr${substr(local.clean_suffix, 0, 47)}"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = local.location
-  sku                 = var.acr_sku
-  subnet_id           = module.vnet.subnet_ids["pep"]
-  private_dns_zone_id = module.private_dns.dns_zone_ids["acr"]
-  tags                = local.tags
+  name                       = "acr${substr(local.clean_suffix, 0, 47)}"
+  resource_group_name        = data.azurerm_resource_group.rg.name
+  location                   = local.location
+  sku                        = var.acr_sku
+  admin_enabled              = var.acr_admin_enabled
+  subnet_id                  = module.vnet.subnet_ids["pep"]
+  private_dns_zone_id        = module.private_dns.dns_zone_ids["acr"]
+  log_analytics_workspace_id = module.monitoring.workspace_id
+  tags                       = local.tags
 }
 
 # =============================================================================
@@ -105,13 +113,14 @@ module "acr" {
 module "servicebus" {
   source = "./modules/servicebus"
 
-  name                = "sb-${local.suffix}"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = local.location
-  sku                 = var.servicebus_sku
-  subnet_id           = module.vnet.subnet_ids["pep"]
-  private_dns_zone_id = module.private_dns.dns_zone_ids["servicebus"]
-  tags                = local.tags
+  name                       = "sb-${local.suffix}"
+  resource_group_name        = data.azurerm_resource_group.rg.name
+  location                   = local.location
+  sku                        = var.servicebus_sku
+  subnet_id                  = module.vnet.subnet_ids["pep"]
+  private_dns_zone_id        = module.private_dns.dns_zone_ids["servicebus"]
+  log_analytics_workspace_id = module.monitoring.workspace_id
+  tags                       = local.tags
 }
 
 # =============================================================================
@@ -120,17 +129,17 @@ module "servicebus" {
 module "postgres" {
   source = "./modules/postgres"
 
-  name                 = "psql-${local.suffix}"
-  resource_group_name  = data.azurerm_resource_group.rg.name
-  location             = local.location
-  delegated_subnet_id  = module.vnet.subnet_ids["psql"]
-  private_dns_zone_id  = module.private_dns.dns_zone_ids["postgres"]
-  sku_name             = var.postgres_sku
-  pg_version           = var.postgres_version
-  database_name        = var.postgres_db_name
-  key_vault_id         = module.keyvault.key_vault_id
-  key_vault_rbac_ready = module.keyvault.rbac_ready
-  tags                 = local.tags
+  name                       = "psql-${local.suffix}"
+  resource_group_name        = data.azurerm_resource_group.rg.name
+  location                   = local.location
+  delegated_subnet_id        = module.vnet.subnet_ids["psql"]
+  private_dns_zone_id        = module.private_dns.dns_zone_ids["postgres"]
+  sku_name                   = var.postgres_sku
+  pg_version                 = var.postgres_version
+  database_name              = var.postgres_db_name
+  key_vault_id               = module.keyvault.key_vault_id
+  log_analytics_workspace_id = module.monitoring.workspace_id
+  tags                       = local.tags
 }
 
 # =============================================================================

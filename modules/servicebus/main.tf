@@ -31,3 +31,19 @@ resource "azurerm_private_endpoint" "pep_sb" {
 
   tags = var.tags
 }
+
+# Diagnostic setting to stream Service Bus operational logs and metrics to Log Analytics Workspace
+resource "azurerm_monitor_diagnostic_setting" "sb_diag" {
+  count                      = var.log_analytics_workspace_id != null ? 1 : 0
+  name                       = "diag-${var.name}"
+  target_resource_id         = azurerm_servicebus_namespace.sb.id
+  log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  enabled_log {
+    category_group = "allLogs"
+  }
+
+  enabled_metric {
+    category = "AllMetrics"
+  }
+}

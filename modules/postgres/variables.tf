@@ -59,16 +59,10 @@ variable "key_vault_id" {
   default     = null
 }
 
-variable "store_secrets_in_key_vault" {
-  description = "Whether to store the PostgreSQL credentials in Key Vault (set statically by the caller, since key_vault_id is often only known after apply)"
-  type        = bool
-  default     = true
-}
-
-variable "key_vault_rbac_ready" {
-  description = "Pass the keyvault module's rbac_ready output so secret writes wait for the admin role assignment to propagate"
-  type        = bool
-  default     = true
+variable "log_analytics_workspace_id" {
+  description = "Log Analytics Workspace ID for diagnostic settings"
+  type        = string
+  default     = null
 }
 
 variable "tags" {

@@ -20,9 +20,9 @@ variable "sku" {
 }
 
 variable "admin_enabled" {
-  description = "Enable admin user on ACR"
+  description = "Enable admin user on ACR. Disabled by default to enforce Managed Identity authentication."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_private_endpoint" {
@@ -39,6 +39,12 @@ variable "subnet_id" {
 
 variable "private_dns_zone_id" {
   description = "Private DNS Zone ID for privatelink.azurecr.io"
+  type        = string
+  default     = null
+}
+
+variable "log_analytics_workspace_id" {
+  description = "Log Analytics Workspace ID for diagnostic settings"
   type        = string
   default     = null
 }

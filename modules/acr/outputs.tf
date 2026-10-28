@@ -14,12 +14,12 @@ output "login_server" {
 }
 
 output "admin_username" {
-  description = "Admin username for ACR"
-  value       = azurerm_container_registry.acr.admin_username
+  description = "Admin username for ACR (null if admin_enabled is false)"
+  value       = var.admin_enabled ? azurerm_container_registry.acr.admin_username : null
 }
 
 output "admin_password" {
-  description = "Admin password for ACR"
-  value       = azurerm_container_registry.acr.admin_password
+  description = "Admin password for ACR (null if admin_enabled is false)"
+  value       = var.admin_enabled ? azurerm_container_registry.acr.admin_password : null
   sensitive   = true
 }

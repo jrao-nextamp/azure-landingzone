@@ -35,6 +35,24 @@ variable "private_dns_zone_id" {
   type        = string
 }
 
+variable "public_network_access_enabled" {
+  description = "Whether public network access is enabled for the storage account. Disabled for private network isolation."
+  type        = bool
+  default     = false
+}
+
+variable "allowed_ip_addresses" {
+  description = "Optional list of IPv4 addresses allowed through the firewall"
+  type        = list(string)
+  default     = []
+}
+
+variable "log_analytics_workspace_id" {
+  description = "Log Analytics Workspace ID for diagnostic settings"
+  type        = string
+  default     = null
+}
+
 variable "tags" {
   description = "Resource tags"
   type        = map(string)
