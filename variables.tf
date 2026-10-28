@@ -62,3 +62,48 @@ variable "log_daily_quota_gb" {
   type        = number
   default     = 1
 }
+
+# -----------------------------------------------------------------------------
+# Basic Provisioning SKU Variables
+# -----------------------------------------------------------------------------
+variable "acr_sku" {
+  description = "ACR SKU: Basic, Standard, or Premium. Note: Private endpoints require Premium."
+  type        = string
+  default     = "Standard"
+}
+
+variable "servicebus_sku" {
+  description = "Service Bus SKU: Basic, Standard, or Premium. Note: Private endpoints require Premium."
+  type        = string
+  default     = "Standard"
+}
+
+variable "postgres_sku" {
+  description = "PostgreSQL Flexible Server SKU (e.g. B_Standard_B1ms for Dev)"
+  type        = string
+  default     = "B_Standard_B1ms"
+}
+
+variable "postgres_version" {
+  description = "PostgreSQL major version"
+  type        = string
+  default     = "16"
+}
+
+variable "postgres_db_name" {
+  description = "Initial PostgreSQL database name"
+  type        = string
+  default     = "nextamp_db"
+}
+
+variable "keyvault_sku" {
+  description = "Key Vault SKU: standard or premium"
+  type        = string
+  default     = "standard"
+}
+
+variable "admin_principal_id" {
+  description = "Optional object ID of the user or SP to grant Key Vault Administrator role (defaults to deployer if unset)"
+  type        = string
+  default     = null
+}
